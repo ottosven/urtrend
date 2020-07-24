@@ -20,7 +20,7 @@ NULL
 #' smallb.test(series1)
 #' series2 <- cumsum(rnorm(100)) + c(rep(0,60), rep(5, 40))
 #' smallb.test(series2)
-smallb.test <- function(y, B = floor(length(y)^{0.7}), HC = TRUE){
+smallb.test <- function(y, B = floor(length(y)^0.7), HC = TRUE){
   T <- length(y)
   # get numerator and denominator of phihat
   get.phihat <- function(y,B,T){
@@ -64,7 +64,7 @@ smallb.test <- function(y, B = floor(length(y)^{0.7}), HC = TRUE){
 #' @return A list containing the following components:
 #' \item{teststatistic}{The value of the small-b test statistic.}
 #' \item{crit.values}{A vector of critical valiues for different significance levels.}
-#' \item{crit.values}{A logical vector indicating whether the unit root hypothesis is rejected in favor of stationarity for at different significance levels.}
+#' \item{rejection}{A logical vector indicating whether the unit root hypothesis is rejected in favor of stationarity for at different significance levels.}
 #' \item{crit.blocklength}{The relative blocklength for which the critical values are reported.}
 #' @export
 #'

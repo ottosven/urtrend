@@ -4,9 +4,7 @@
 \alias{smallb.test}
 \title{Small-b unit root test}
 \usage{
-smallb.test(y, B = floor(length(y)^{
-    0.7
-}), HC = TRUE)
+smallb.test(y, B = floor(length(y)^0.7), HC = TRUE)
 }
 \arguments{
 \item{y}{Vector to be tested for a unit root.}

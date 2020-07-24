@@ -8,7 +8,6 @@
 ## ####################################################################
 rm(list=ls())
 start<-Sys.time()
-library(backCUSUM)  # install package with remotes::install_github("ottosven/urtrend")
 library(parallel)
 ## ##################################
 ## Cluster setup
@@ -30,56 +29,37 @@ snow::clusterSetupRNG(cl)
 ## Simulation setting
 ## ##################################
 MC <- 100000
-## ## ##################################
-simM1 <- function(T){
-  u <- rnorm(T,0,1)
-  y <- 2 + u
-  model <- y ~ 1
-  return(c(
-    backCUSUM::Q.test(model)$statistic,
-    backCUSUM::BQ.test(model)$statistic,
-    backCUSUM::SBQ.test(model)$statistic
-  ))
-}
-##
-simM2 <- function(T){
-  u <- rnorm(T,0,1)
-  x <- rnorm(T,0,1)
-  y <- 2 + x + u
-  model <- y ~ 1 + x
-  return(c(
-    backCUSUM::Q.test(model)$statistic,
-    backCUSUM::BQ.test(model)$statistic,
-    backCUSUM::SBQ.test(model)$statistic
-  ))
-}
-##
-sim.size <- function(T,k){
-  crit <- c(get.crit.Q(k)[2], get.crit.BQ(k)[2], get.crit.SBQ(k)[2])
-  if(k == 1){
-    Statistics <- parSapply(cl,rep(T,MC), simM1)
-  } else {
-    Statistics <- parSapply(cl,rep(T,MC), simM2)
+T <- 50000
+## ##################################
+sim.dist <- function(T, bRANGE){
+  innerDEN <- function(j, W, T, B) ( sum((W[(j+1):(j+B)] - W[j])^2)/T )
+  tFB <- numeric(length(bRANGE))
+  W <- cumsum(rnorm(T,0,sqrt(1/T)))
+  for(i in 1:length(bRANGE)){
+    b <- bRANGE[i]
+    B <- floor(b*T)
+    NUM <- sum((W[(B+1):T] - W[1:(T-B)])^2)/T - b*(1-b)
+    DEN <- 2*sqrt(b*sum(sapply(1:(T-B), innerDEN, W=W, T=T, B=B))/T)
+    tFB[i] <- NUM/DEN
   }
-  size <- c(
-    length(which(Statistics[1,] > crit[1]))/MC,
-    length(which(Statistics[2,] > crit[2]))/MC,
-    length(which(Statistics[3,] > crit[3]))/MC
-  )
-  return(size)
+  tFB
 }
 ##
-size.100.M1 <- sim.size(100,1)
-size.200.M1 <- sim.size(200,1)
-size.500.M1 <- sim.size(500,1)
-size.100.M2 <- sim.size(100,2)
-size.200.M2 <- sim.size(200,2)
-size.500.M2 <- sim.size(500,2)
+sim.crit <- function(T){
+  bRANGE <- c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9) 
+  realizations <- parSapply(cl,rep(T,MC),sim.dist, bRANGE=bRANGE)
+  levels <- c(0.2, 0.1, 0.05, 0.04, 0.03, 0.02, 0.01, 0.001)
+  quantiles <- matrix(nrow = length(levels), ncol = length(bRANGE))
+  colnames(quantiles) <- bRANGE
+  rownames(quantiles) <- levels 
+  for(i in 1:length(bRANGE)){
+    quantiles[,i] <- quantile(realizations[i,], levels)
+  }
+  quantiles
+}
 ##
-resultsM1 <- c(size.100.M1, size.200.M1, size.500.M1)
-resultsM2 <- c(size.100.M2, size.200.M2, size.500.M2)
-table3 <- matrix(c(resultsM1, resultsM2), nrow = 2, byrow = TRUE, dimnames = list(c("Model I", "Model II"), rep(c("Q", "BQ", "SBQ"),3)))
-table3
-write.table(table3,file="./results/Table3.csv", col.names=NA)
+crits <- sim.crit(T)
+crits
+write.table(crits,file="./table1.csv")
 Sys.time()-start
 stopCluster(cl)
