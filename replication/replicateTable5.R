@@ -246,7 +246,7 @@ part6 <- sim.6()
 part7 <- sim.7()
 part8 <- sim.8()
 table5 <- rbind(part5, part6, part7, part8)
-colnames(table5) <- c("100-H0-0","100-H1-0","300-H0-0","300-H1-0","100-H0-5","100-H1-5","300-H0-5","300-H1-5","100-H0-10","100-H1-10","300-H0-10","300-H1-10")
+colnames(table5) <- c("100-H0-3","100-H0-6","100-H0-9","100-H1-3","100-H1-6","100-H1-9","300-H0-3","300-H0-6","300-H0-9","300-H1-3","300-H1-6","300-H1-9")
 table5
 write.table(table5,file="./table5.csv")
 Sys.time()-start
