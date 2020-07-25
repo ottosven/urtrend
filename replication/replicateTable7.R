@@ -149,6 +149,6 @@ part2 <- sim.2()
 table7 <- rbind(part1, part2)
 colnames(table7) <- c("100-H0-3","100-H0-6","100-H0-9","100-H1-3","100-H1-6","100-H1-9","300-H0-3","300-H0-6","300-H0-9","300-H1-3","300-H1-6","300-H1-9")
 table7
-write.table(table7,file="./table7.csv")
+write.table(table7,file="./table7.csv", col.names = NA)
 Sys.time()-start
 stopCluster(cl)

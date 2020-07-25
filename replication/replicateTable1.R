@@ -60,6 +60,6 @@ sim.crit <- function(T){
 ##
 crits <- sim.crit(T)
 crits
-write.table(crits,file="./table1.csv")
+write.table(crits,file="./table1.csv", col.names = NA)
 Sys.time()-start
 stopCluster(cl)
