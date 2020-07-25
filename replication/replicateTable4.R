@@ -109,9 +109,8 @@ sim.tablecolumn <- function(T, sigma0, rho, trendtype=1, lambda=3){
   c(allTauSB, allTauFB, DF)
 }
 ##
-sim.1 <- function(...){
+sim <- function(type){
   realizations <- list()
-  type <- 1
   realizations[[1]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
   realizations[[2]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
   realizations[[3]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
@@ -142,109 +141,10 @@ sim.1 <- function(...){
   rejectionrates
 }
 ##
-sim.2 <- function(...){
-  realizations <- list()
-  type <- 2
-  realizations[[1]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[2]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[3]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[4]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[5]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[6]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  realizations[[7]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[8]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[9]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[10]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[11]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[12]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  CritAll <- c(
-    rep(qnorm(0.05),4), 
-    get.crit.FB(0.2)$crit.values["0.05"],
-    get.crit.FB(0.4)$crit.values["0.05"],
-    get.crit.FB(0.6)$crit.values["0.05"],
-    c(-2.86, -1.94, -2.89, -4.03)
-  )
-  statnames <- c("SB05", "SB06", "SB07", "SB08", "FB02", "FB04", "FB06", "ADF", "DFGLS", "DFGLS-t", "EL")
-  rejectionrates <- matrix(ncol = 12, nrow = 11)
-  rownames(rejectionrates) <- statnames
-  for(j in 1:12){
-    for(i in 1:11){
-      rejectionrates[i,j] <- length(which(realizations[[j]][i,] < CritAll[i]))/MC
-    }
-  }
-  rejectionrates
-}
-##
-sim.3 <- function(...){
-  realizations <- list()
-  type <- 3
-  realizations[[1]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[2]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[3]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[4]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[5]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[6]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  realizations[[7]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[8]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[9]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[10]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[11]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[12]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  CritAll <- c(
-    rep(qnorm(0.05),4), 
-    get.crit.FB(0.2)$crit.values["0.05"],
-    get.crit.FB(0.4)$crit.values["0.05"],
-    get.crit.FB(0.6)$crit.values["0.05"],
-    c(-2.86, -1.94, -2.89, -4.03)
-  )
-  statnames <- c("SB05", "SB06", "SB07", "SB08", "FB02", "FB04", "FB06", "ADF", "DFGLS", "DFGLS-t", "EL")
-  rejectionrates <- matrix(ncol = 12, nrow = 11)
-  rownames(rejectionrates) <- statnames
-  for(j in 1:12){
-    for(i in 1:11){
-      rejectionrates[i,j] <- length(which(realizations[[j]][i,] < CritAll[i]))/MC
-    }
-  }
-  rejectionrates
-}
-##
-sim.4 <- function(...){
-  realizations <- list()
-  type <- 4
-  realizations[[1]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[2]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[3]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[4]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[5]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[6]] <- parSapply(cl,rep(100,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  realizations[[7]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=3)
-  realizations[[8]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=6)
-  realizations[[9]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=1, trendtype=type, lambda=9)
-  realizations[[10]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=3)
-  realizations[[11]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=6)
-  realizations[[12]] <- parSapply(cl,rep(300,MC),sim.tablecolumn, sigma0=0, rho=0.9, trendtype=type, lambda=9)
-  CritAll <- c(
-    rep(qnorm(0.05),4), 
-    get.crit.FB(0.2)$crit.values["0.05"],
-    get.crit.FB(0.4)$crit.values["0.05"],
-    get.crit.FB(0.6)$crit.values["0.05"],
-    c(-2.86, -1.94, -2.89, -4.03)
-  )
-  statnames <- c("SB05", "SB06", "SB07", "SB08", "FB02", "FB04", "FB06", "ADF", "DFGLS", "DFGLS-t", "EL")
-  rejectionrates <- matrix(ncol = 12, nrow = 11)
-  rownames(rejectionrates) <- statnames
-  for(j in 1:12){
-    for(i in 1:11){
-      rejectionrates[i,j] <- length(which(realizations[[j]][i,] < CritAll[i]))/MC
-    }
-  }
-  rejectionrates
-}
-##
-part1 <- sim.1()
-part2 <- sim.2()
-part3 <- sim.3()
-part4 <- sim.4()
+part1 <- sim(1)
+part2 <- sim(2)
+part3 <- sim(3)
+part4 <- sim(4)
 table4 <- rbind(part1, part2, part3, part4)
 colnames(table4) <- c("100-H0-3","100-H0-6","100-H0-9","100-H1-3","100-H1-6","100-H1-9","300-H0-3","300-H0-6","300-H0-9","300-H1-3","300-H1-6","300-H1-9")
 table4

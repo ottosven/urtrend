@@ -159,13 +159,13 @@ sim.tablecolumn <- function(T, sigma0, rho, p=0){
   allTauFB <- numeric(length(GammasFB))
   DFlags <- rep(0,4)
   if(p == 1){
-    y <- urtrend::get.prewhitened(y,1)
     DFlags <- rep(1,4)
+    y <- urtrend::get.prewhitened(y,1)
   }
   if (p == "BIC"){
+    DFlags <- LagSelectionDFType(y, 4)
     lags <- urtrend::lagselection.BIC(y,4)
     y <- urtrend::get.prewhitened(y,lags)
-    DFlags <- LagSelectionDFType(y, 4)
   }
   for(i in 1:length(GammasSB)) ( allTauSB[i] <- urtrend::smallb.test(y,Bsmallb[i], HC=TRUE)$teststatistic )
   for(i in 1:length(GammasFB)) ( allTauFB[i] <- urtrend::fixedb.test(y,Bfixedb[i], HC=TRUE)$teststatistic )
