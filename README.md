@@ -11,6 +11,6 @@ this paper.
 You can install the package using the following command:
 
 ``` r
-if (!require("remotes")){install.packages("remotes")}
+install.packages("remotes")
 remotes::install_github("ottosven/urtrend")
 ```
