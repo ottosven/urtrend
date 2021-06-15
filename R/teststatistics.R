@@ -20,6 +20,10 @@ NULL
 #' smallb.test(series1)
 #' series2 <- cumsum(rnorm(100)) + c(rep(0,60), rep(5, 40))
 #' smallb.test(series2)
+#' ## autocorrelation robust test
+#' series3 <- filter(rnorm(300),0.8,"recursive")
+#' series3.pw <- get.prewhitened(series3, p = 1)
+#' smallb.test(series3.pw)
 smallb.test <- function(y, B = floor(length(y)^0.7), HC = TRUE){
   T <- length(y)
   # get numerator and denominator of phihat
@@ -73,6 +77,10 @@ smallb.test <- function(y, B = floor(length(y)^0.7), HC = TRUE){
 #' fixedb.test(series1)
 #' series2 <- cumsum(rnorm(100)) + c(rep(0,60), rep(5, 40))
 #' fixedb.test(series2)
+#' ## autocorrelation robust test
+#' series3 <- filter(rnorm(300),0.8,"recursive")
+#' series3.pw <- get.prewhitened(series3, p = 1)
+#' fixedb.test(series3.pw)
 fixedb.test <- function(y, B = floor(0.2*length(y)), HC = TRUE){
   phihat<-function(y,B){
     T<-length(y)
