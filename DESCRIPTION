@@ -1,6 +1,6 @@
 Package: urtrend
 Type: Package
-Title: Unit Root Testing with Slowly Varyoing Trends
+Title: Unit Root Testing with Slowly Varying Trends
 Version: 0.1.0
 Author: Sven Otto <sven.otto@uni-bonn.de>
 Maintainer: Sven Otto <sven.otto@uni-bonn.de>
