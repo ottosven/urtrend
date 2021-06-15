@@ -27,4 +27,8 @@ series1 <- rnorm(100) + c(rep(0,60), rep(5, 40))
 smallb.test(series1)
 series2 <- cumsum(rnorm(100)) + c(rep(0,60), rep(5, 40))
 smallb.test(series2)
+## autocorrelation robust test
+series3 <- filter(rnorm(300),0.8,"recursive")
+series3.pw <- get.prewhitened(series3, p = 1)
+smallb.test(series3.pw)
 }
